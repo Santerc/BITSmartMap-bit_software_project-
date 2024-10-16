@@ -1,0 +1,111 @@
+@startuml
+actor "学生" as Student
+actor "教职工" as Teacher
+actor "管理员" as Admin
+rectangle 京工智图平台 {
+  Student --> (查看地图)
+  Student --> (定位和导航)
+  Student --> (查看生活服务)
+  Student --> (获取活动公告)
+  Teacher --> (查看地图)
+  Teacher --> (定位和导航)
+  Teacher --> (查看生活服务)
+  Teacher --> (获取活动公告)
+  Admin --> (管理活动与推送)
+  Admin --> (数据统计与分析)
+}
+@enduml
+@startuml
+class User {
+  +username: String
+  +password: String
+  +role: String
+  +login()
+  +viewMap()
+  +viewServices()
+}
+
+class Position {
+  +location: String
+  +buildingList: List
+  +mark: Date
+  +comments: list
+  +locate()
+  +navigate()
+  +searchLocation()
+  +showworktime()
+  +addcomment()
+  +showcomment()
+}
+
+class Activity {
+  +activityName: String
+  +location: String
+  +time: Date
+  +postActivity()
+  +viewActivity()
+}
+
+User --> Position
+User --> Activity
+@enduml
+@startuml
+actor 用户
+participant 系统
+participant 地图服务
+
+用户 -> 系统 : 登录
+系统 -> 系统 : 验证用户
+系统 -> 用户 : 返回登录结果
+用户 -> 系统 : 查看地图请求
+系统 -> 地图服务 : 请求地图
+地图服务 -> 系统 : 返回地图
+系统 -> 用户 : 显示地图
+用户 -> 系统 : 导航请求
+系统 -> 地图服务 : 计算路径
+地图服务 -> 系统 : 返回路径
+系统 -> 用户 : 显示导航路径
+
+@enduml
+
+@startuml
+actor 管理员 as Admin
+participant 系统 as System
+participant 数据分析模块 as DataAnalytics
+
+Admin -> System : 请求查看数据统计
+System -> DataAnalytics : 获取校园热点区域、用户使用频率等数据
+DataAnalytics -> System : 返回统计数据
+System -> Admin : 显示统计与分析结果
+@enduml
+@startuml
+actor 用户 as User
+participant 系统 as System
+participant 活动服务模块 as ActivityService
+
+User -> System : 请求授权
+System -> System : 验证用户
+System -> User : 返回验证结果
+User -> System : 输入活动信息
+System -> ActivityService : 发布新活动
+ActivityService -> System : 返回活动发布成功消息
+System -> User : 显示发布成功
+@enduml
+
+@startuml
+package "京工智图平台" {
+  
+  [用户模块] --> [地图服务模块]
+  [用户模块] --> [生活服务模块]
+  [用户模块] --> [活动服务模块]
+  [用户模块] --> [数据分析模块]
+  
+  [地图服务模块] --> [数据库模块]
+  [生活服务模块] --> [数据库模块]
+  [活动服务模块] --> [数据库模块]
+  [数据分析模块] --> [数据库模块]
+}
+
+[数据库模块] -down- [数据库]
+
+@enduml
